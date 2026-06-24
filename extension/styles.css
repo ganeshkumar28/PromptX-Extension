@@ -1,0 +1,19 @@
+.promptx-spark-btn {
+  position: absolute;
+  right: 50px; /* Adjust based on ChatGPT's native send button */
+  bottom: 12px;
+  background-color: #10a37f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.2s;
+}
+
+.promptx-spark-btn:hover {
+  background-color: #0d8c6d;
+}
