@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "PromptX",
+  "version": "1.0",
+  "description": "Zero-friction prompt enhancement.",
+  "action": {
+    "default_icon": "icons/flash.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://chatgpt.com/*",
+        "*://claude.ai/*",
+        "*://gemini.google.com/*"
+      ],
+      "css": ["styles.css"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
