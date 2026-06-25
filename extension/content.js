@@ -16,17 +16,41 @@ function injectSparkButton() {
     sparkBtn.innerText = '✨ Spark';
     sparkBtn.className = 'promptx-spark-btn';
 
-    // Click listener to read the text
+    // Click listener to read the text and trigger the backend
     sparkBtn.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent accidental form submission
+        event.preventDefault(); 
         
-        // ChatGPT uses a rich text editor in newer versions, so innerText is safer
         const currentText = textArea.innerText || textArea.value; 
-        console.log("PromptX captured:", currentText);
         
-        // Visual feedback for Step 1
+        // Visual feedback - lock the button while processing
         sparkBtn.innerText = 'Loading...';
-        setTimeout(() => sparkBtn.innerText = '✨ Spark', 1000); 
+        sparkBtn.disabled = true;
+        sparkBtn.style.opacity = '0.7';
+
+        // Send the text to our background service worker
+        chrome.runtime.sendMessage(
+            { action: "enhancePrompt", text: currentText },
+            (response) => {
+                // Reset button visuals
+                sparkBtn.innerText = '✨ Spark';
+                sparkBtn.disabled = false;
+                sparkBtn.style.opacity = '1';
+
+                if (response && response.success) {
+                    // The React DOM Manipulation Strategy
+                    textArea.focus();
+                    
+                    // Select all existing text and replace it via execCommand
+                    // This forces React's internal state to recognize the change   
+                    document.execCommand('selectAll', false, null);
+                    document.execCommand('insertText', false, response.enhancedText);
+                    
+                } else {
+                    console.error("PromptX Backend Error:", response?.error);
+                    alert("PromptX Error: Could not connect to the backend. Is Spring Boot running?");
+                }
+            }
+        );
     });
 
     // Inject into DOM
